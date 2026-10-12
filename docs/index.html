@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0e13" media="(prefers-color-scheme: dark)">
 <title>Aftercall — meeting notes that write themselves, on your Mac</title>
 <meta name="description" content="Aftercall notices when a call starts, transcribes both sides on your Mac, and turns it into clear notes: a summary with sources, your own notes, and the full transcript.">
 <link rel="icon" href="img/icon.png">
@@ -24,7 +26,6 @@
          font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, sans-serif; }
   a { color: var(--accent); }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
-  header { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
   .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; color: var(--fg); text-decoration: none; }
   .logo img { width: 30px; height: 30px; }
   .hero { text-align: center; padding: 56px 0 28px; }
@@ -69,16 +70,63 @@
   .mobile-note { display: none; margin: 14px auto 0; max-width: 320px; font-size: 14px; color: var(--muted);
                  background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
   @media (max-width: 700px), (pointer: coarse) and (hover: none) { .mobile-note { display: block; } }
+  /* header */
+  .top { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(16px); -webkit-backdrop-filter: saturate(180%) blur(16px);
+         background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+         padding-top: env(safe-area-inset-top); }
+  .top-in { display: flex; align-items: center; justify-content: space-between; height: 58px; width: 100%; }
+  .pill { font-size: 14px; font-weight: 600; text-decoration: none; color: #fff; padding: 7px 14px; border-radius: 999px;
+          background: linear-gradient(100deg, var(--brand1), var(--brand2)); }
+  h1, h2 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  .chips { list-style: none; padding: 0; margin: 16px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .chips li { font-size: 13px; color: var(--muted); border: 1px solid var(--line); background: var(--card); padding: 4px 11px; border-radius: 999px; }
+
+  /* phones */
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 18px; padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
+    .top-in { height: 52px; }
+    .logo { font-size: 17px; } .logo img { width: 26px; height: 26px; }
+    .hero { padding: 36px 0 8px; }
+    .hero img.app { width: 76px; height: 76px; margin-bottom: 14px; }
+    h1 { font-size: 38px; letter-spacing: -0.035em; }
+    .lead { font-size: 17px; margin-bottom: 24px; }
+    .cta { display: flex; justify-content: center; width: 100%; max-width: 360px; margin: 0 auto; padding: 16px 20px; }
+    section { padding: 52px 0 0; }
+    h2 { font-size: 27px; }
+    .sub { margin-bottom: 24px; font-size: 16px; }
+    /* screenshots: zoom into the readable part instead of shrinking the whole window */
+    .shot { margin-top: 32px; border-radius: 14px; }
+    .zoom { position: relative; height: 300px; }
+    .zoom img { position: absolute; top: 0; left: 0; width: 210%; max-width: none; height: auto; }
+    .zoom-summary img { transform: translate(-29%, -11%); }
+    .zoom-transcript img { transform: translate(-28%, -30%); }
+    .split > div:first-child h2, .split > div:first-child p { text-align: center !important; }
+    .split .bar { justify-content: center !important; }
+    /* feature cards become compact rows */
+    .grid { gap: 10px; }
+    .card { display: grid; grid-template-columns: 38px 1fr; column-gap: 14px; padding: 16px; border-radius: 14px; }
+    .card .ico { grid-row: span 2; }
+    .card h3 { margin: 0 0 3px; font-size: 16px; }
+    .card p { font-size: 14.5px; }
+    ol.steps li { padding: 14px 14px 14px 56px; }
+    ol.steps li::before { left: 14px; top: 14px; }
+    .final { padding: 60px 0 24px; }
+    footer { justify-content: center; text-align: center; padding-bottom: max(28px, env(safe-area-inset-bottom)); }
+  }
   footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; padding: 28px 0 40px; margin-top: 40px;
            display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+<header class="top">
+  <div class="wrap top-in">
     <a class="logo" href="#"><img src="img/icon.png" alt="">Aftercall</a>
-    <a href="#download">Download</a>
-  </header>
+    <a class="pill" href="https://github.com/yosefsun/aftercall-releases/releases/latest/download/Aftercall.zip">Download</a>
+  </div>
+</header>
+<div class="wrap">
 
   <div class="hero">
     <img class="app" src="img/icon.png" alt="Aftercall app icon">
@@ -88,9 +136,9 @@
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.73c-.03-2.56 2.09-3.8 2.19-3.86-1.2-1.75-3.06-1.99-3.71-2.01-1.58-.16-3.09.93-3.89.93-.8 0-2.03-.91-3.34-.88-1.72.03-3.3 1-4.19 2.53-1.79 3.1-.46 7.69 1.28 10.21.85 1.23 1.86 2.61 3.19 2.56 1.28-.05 1.77-.83 3.32-.83s1.99.83 3.34.8c1.38-.02 2.26-1.25 3.1-2.49.98-1.43 1.38-2.81 1.4-2.88-.03-.01-2.68-1.03-2.69-4.08zM13.83 5.2c.71-.86 1.19-2.05 1.06-3.24-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.97-1.08 3.14 1.14.09 2.3-.58 3.01-1.44z"/></svg>
       Download for Mac
     </a>
-    <div class="fine">Free · macOS 14.4 or later · Apple Silicon (M1 and newer) · updates itself</div>
+    <ul class="chips"><li>Free</li><li>macOS 14.4+</li><li>Apple Silicon</li><li>Updates itself</li></ul>
     <div class="mobile-note">📱 Aftercall runs on your Mac. Open this page on your Mac to download it.</div>
-    <div class="shot">
+    <div class="shot zoom zoom-summary">
       <picture>
         <source srcset="img/window-dark.png" media="(prefers-color-scheme: dark)">
         <img src="img/window-light.png" alt="Aftercall meeting page with a summary organized by topic, source links, and action items" width="980" height="640">
@@ -118,7 +166,7 @@
         <p style="color:var(--muted)">While you talk, a tiny bar sits in the corner of your screen. Hover to see the live transcript; click to open the meeting. Jot your own notes in the Notes tab — the summary uses them.</p>
         <div class="bar" style="justify-content:flex-start"><img src="img/bar.png" alt="Recording bar showing a red dot and a timer"></div>
       </div>
-      <div class="shot"><img src="img/transcript.png" alt="Live transcript with speaker labels and timestamps" width="980" height="640"></div>
+      <div class="shot zoom zoom-transcript"><img src="img/transcript.png" alt="Live transcript with speaker labels and timestamps" width="980" height="640"></div>
     </div>
   </section>
 
