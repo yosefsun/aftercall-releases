@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aftercall — meeting notes that write themselves, on your Mac</title>
+<meta name="description" content="Aftercall notices when a call starts, transcribes both sides on your Mac, and turns it into clear notes: a summary with sources, your own notes, and the full transcript.">
+<link rel="icon" href="img/icon.png">
+<meta property="og:title" content="Aftercall for Mac">
+<meta property="og:description" content="Meeting notes that write themselves — transcribed privately on your Mac.">
+<meta property="og:image" content="img/window-light.png">
+<style>
+  :root {
+    --bg: #fbfbfd; --fg: #17171c; --muted: #5d5d6b; --card: #ffffff; --line: #e7e7ee;
+    --brand1: #5b4cff; --brand2: #9e40f2; --accent: #5b4cff; --shadow: 0 30px 80px -30px rgba(40, 20, 120, .35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0e0e13; --fg: #f2f2f7; --muted: #a2a2b2; --card: #17171f; --line: #2a2a36; --accent: #8f84ff;
+            --shadow: 0 30px 80px -30px rgba(0, 0, 0, .8); }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; color: var(--fg); text-decoration: none; }
+  .logo img { width: 30px; height: 30px; }
+  .hero { text-align: center; padding: 56px 0 28px; }
+  .hero img.app { width: 104px; height: 104px; margin-bottom: 18px; }
+  h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.05; letter-spacing: -0.03em; margin: 0 auto 18px; max-width: 820px; }
+  h1 span { background: linear-gradient(100deg, var(--brand1), var(--brand2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { color: var(--muted); font-size: clamp(17px, 2.2vw, 21px); max-width: 680px; margin: 0 auto 30px; }
+  .cta { display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; border-radius: 14px; font-weight: 650; font-size: 17px;
+         color: #fff; text-decoration: none; background: linear-gradient(100deg, var(--brand1), var(--brand2));
+         box-shadow: 0 12px 30px -10px rgba(91, 76, 255, .6); }
+  .cta:hover { filter: brightness(1.08); }
+  .cta svg { width: 20px; height: 20px; }
+  .fine { color: var(--muted); font-size: 14px; margin-top: 12px; }
+  .shot { margin: 48px auto 0; max-width: 1000px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .shot img { display: block; width: 100%; height: auto; }
+  section { padding: 72px 0 8px; }
+  h2 { font-size: clamp(26px, 3.6vw, 36px); letter-spacing: -0.02em; margin: 0 0 10px; text-align: center; }
+  .sub { color: var(--muted); text-align: center; max-width: 640px; margin: 0 auto 36px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .card h3 { margin: 10px 0 6px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .ico { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; color: #fff;
+         background: linear-gradient(135deg, var(--brand1), var(--brand2)); font-size: 19px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+  .split .shot { margin: 0; }
+  .bar { display: flex; justify-content: center; margin: 18px 0 0; }
+  .bar img { width: 220px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,.18)); }
+  ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 0 auto; max-width: 720px; }
+  ol.steps li { counter-increment: s; position: relative; padding: 16px 18px 16px 62px; margin-bottom: 12px;
+                background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+  ol.steps li::before { content: counter(s); position: absolute; left: 18px; top: 15px; width: 28px; height: 28px; border-radius: 50%;
+                        display: grid; place-items: center; font-weight: 700; font-size: 14px; color: #fff;
+                        background: linear-gradient(135deg, var(--brand1), var(--brand2)); }
+  ol.steps b { display: block; }
+  ol.steps span { color: var(--muted); font-size: 15px; }
+  code { font: 14px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--line); padding: 1px 6px; border-radius: 6px; }
+  .final { text-align: center; padding: 80px 0 40px; }
+  footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; padding: 28px 0 40px; margin-top: 40px;
+           display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="logo" href="#"><img src="img/icon.png" alt="">Aftercall</a>
+    <a href="#download">Download</a>
+  </header>
+
+  <div class="hero">
+    <img class="app" src="img/icon.png" alt="Aftercall app icon">
+    <h1>Meeting notes that <span>write themselves</span>.</h1>
+    <p class="lead">Aftercall notices when a call starts, transcribes both sides privately on your Mac, and turns the conversation into clear notes — a summary with sources, your own notes, and the full transcript.</p>
+    <a class="cta dl" href="https://github.com/yosefsun/aftercall-releases/releases/latest/download/Aftercall.zip">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.73c-.03-2.56 2.09-3.8 2.19-3.86-1.2-1.75-3.06-1.99-3.71-2.01-1.58-.16-3.09.93-3.89.93-.8 0-2.03-.91-3.34-.88-1.72.03-3.3 1-4.19 2.53-1.79 3.1-.46 7.69 1.28 10.21.85 1.23 1.86 2.61 3.19 2.56 1.28-.05 1.77-.83 3.32-.83s1.99.83 3.34.8c1.38-.02 2.26-1.25 3.1-2.49.98-1.43 1.38-2.81 1.4-2.88-.03-.01-2.68-1.03-2.69-4.08zM13.83 5.2c.71-.86 1.19-2.05 1.06-3.24-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.97-1.08 3.14 1.14.09 2.3-.58 3.01-1.44z"/></svg>
+      Download for Mac
+    </a>
+    <div class="fine">Free · macOS 14.4 or later · Apple Silicon (M1 and newer) · updates itself</div>
+    <div class="shot">
+      <picture>
+        <source srcset="img/window-dark.png" media="(prefers-color-scheme: dark)">
+        <img src="img/window-light.png" alt="Aftercall meeting page with a summary organized by topic, source links, and action items" width="980" height="640">
+      </picture>
+    </div>
+  </div>
+
+  <section>
+    <h2>Everything after the call, done for you</h2>
+    <p class="sub">Join your call as usual. Aftercall takes it from there — and stays out of the way.</p>
+    <div class="grid">
+      <div class="card"><div class="ico">📞</div><h3>Notices every call</h3><p>Zoom, Teams, Google Meet, Slack, WhatsApp, FaceTime — when an app starts using your mic, a small prompt offers to take notes.</p></div>
+      <div class="card"><div class="ico">🔒</div><h3>Private transcription</h3><p>Speech is transcribed on your Mac's Neural Engine. Your audio never leaves your computer.</p></div>
+      <div class="card"><div class="ico">🗣️</div><h3>English and Hebrew</h3><p>Calls can switch languages freely — each sentence goes to the right model. English plus 24 European languages too.</p></div>
+      <div class="card"><div class="ico">✨</div><h3>Notes like a great assistant</h3><p>Topic-by-topic summary with names, decisions and action items. Every point links to the moment it was said.</p></div>
+      <div class="card"><div class="ico">⏹️</div><h3>Hands-off</h3><p>When the call ends, Aftercall stops on its own and writes your notes. You'll find them waiting.</p></div>
+      <div class="card"><div class="ico">📂</div><h3>Yours to keep</h3><p>Plain Markdown and JSON files in a folder you choose. Optional copies to Google Drive, Notion or your own webhook.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="split">
+      <div>
+        <h2 style="text-align:left">See it as it happens</h2>
+        <p style="color:var(--muted)">While you talk, a tiny bar sits in the corner of your screen. Hover to see the live transcript; click to open the meeting. Jot your own notes in the Notes tab — the summary uses them.</p>
+        <div class="bar" style="justify-content:flex-start"><img src="img/bar.png" alt="Recording bar showing a red dot and a timer"></div>
+      </div>
+      <div class="shot"><img src="img/transcript.png" alt="Live transcript with speaker labels and timestamps" width="980" height="640"></div>
+    </div>
+  </section>
+
+  <section id="download">
+    <h2>Install in a minute</h2>
+    <p class="sub">This early version is signed but not yet notarized by Apple, so macOS asks you to confirm the first time.</p>
+    <ol class="steps">
+      <li><b>Download and open the zip</b><span>Drag <b style="display:inline">Aftercall</b> into your Applications folder.</span></li>
+      <li><b>Open it the first time</b><span>Double-click Aftercall. If macOS says it can't verify the developer, open <b style="display:inline">System Settings → Privacy &amp; Security</b> and click <b style="display:inline">Open Anyway</b>.</span></li>
+      <li><b>Allow the microphone and system audio</b><span>So Aftercall can hear both you and the other people on the call.</span></li>
+      <li><b>Turn on AI notes</b><span>If you use <a href="https://claude.com/claude-code">Claude Code</a>, summaries use your existing Claude subscription automatically. Otherwise add an Anthropic API key in <b style="display:inline">Settings → AI notes</b>.</span></li>
+    </ol>
+  </section>
+
+  <div class="final">
+    <h2>Never take meeting notes again.</h2>
+    <p class="sub">Free for Mac. Updates install automatically.</p>
+    <a class="cta dl" href="https://github.com/yosefsun/aftercall-releases/releases/latest/download/Aftercall.zip">Download Aftercall</a>
+    <div class="fine" id="ver">Latest version</div>
+  </div>
+
+  <footer>
+    <span>© 2026 Aftercall</span>
+    <span><a href="https://github.com/yosefsun/aftercall-releases/releases">Release notes</a></span>
+  </footer>
+</div>
+<script>
+  // Show the latest version number from the update feed (best effort; the page works without it).
+  fetch("https://api.github.com/repos/yosefsun/aftercall-releases/releases/latest")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { if (j && j.tag_name) document.getElementById("ver").textContent = "Latest version " + j.tag_name.replace(/^v/, ""); })
+    .catch(function () {});
+</script>
+</body>
+</html>
