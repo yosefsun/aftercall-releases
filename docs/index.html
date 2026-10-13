@@ -218,5 +218,8 @@
     .then(function (j) { if (j && j.tag_name) document.getElementById("ver").textContent = "Latest version " + j.tag_name.replace(/^v/, ""); })
     .catch(function () {});
 </script>
+<!-- Vercel Web Analytics: page views and visitors (no cookies) -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
